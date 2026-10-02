@@ -15,6 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2       # indexnow compares the push against the commit before it
       - uses: actions/setup-node@v4
         with:
           node-version: "20"        # rooms-data.js is read with node
@@ -22,3 +24,10 @@ jobs:
         with:
           python-version: "3.12"
       - run: python scripts/validate.py
+
+      # Bing and Yandex accept a push notification; ChatGPT answers are built
+      # on the Bing index, so this is also how a new page becomes quotable.
+      # Pull requests do not ping — only what is actually on main.
+      - name: Tell IndexNow what changed
+        if: github.event_name == push
+        run: python scripts/indexnow.py

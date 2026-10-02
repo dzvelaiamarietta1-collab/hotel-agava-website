@@ -9,4 +9,15 @@ Disallow: /admin.html
 Disallow: /manage
 Disallow: /manage.html
 
+# Search-time AI crawlers are welcome: these are the agents that fetch a page
+# in order to answer a question and cite it. Listed explicitly so the intent is
+# on record, not left to the wildcard rule above.
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: PerplexityBot
+User-agent: Claude-SearchBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+Allow: /
+
 Sitemap: https://hotelagava.ge/sitemap.xml
