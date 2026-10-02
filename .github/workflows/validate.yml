@@ -29,5 +29,5 @@ jobs:
       # on the Bing index, so this is also how a new page becomes quotable.
       # Pull requests do not ping — only what is actually on main.
       - name: Tell IndexNow what changed
-        if: github.event_name == push
+        if: github.event_name == 'push'
         run: python scripts/indexnow.py
