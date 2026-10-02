@@ -5,6 +5,11 @@
 > in the hotel courtyard, free Wi-Fi, a lift serving all four floors and a
 > reception staffed around the clock. Rated 4.8 on Google from 355 reviews.
 
+## Full reference
+
+Every fact on the site, including all the questions and answers, in one file:
+https://hotelagava.ge/llms-full.txt
+
 ## Facts
 
 - Address: 161 Akaki Beliashvili Street, Dighomi, Didube district, Tbilisi, Georgia

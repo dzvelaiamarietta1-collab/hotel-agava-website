@@ -36,6 +36,9 @@ jobs:
       - name: Refresh the "updated" dates
         run: node scripts/freshness.js
 
+      - name: Rebuild the AI reference file
+        run: node scripts/llmsfull.js
+
       - name: Rebuild sitemap
         run: python scripts/gen_sitemap.py
 
