@@ -1,0 +1,3 @@
+# Missing URLs served the 404 status with an empty body: the visitor saw a
+# blank page. Cloudflare serves /404.html for anything unmatched now.
+/*    /404.html    404
