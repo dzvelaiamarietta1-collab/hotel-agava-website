@@ -12,6 +12,25 @@
     return "/" + u;
   }
 
+
+  /* When the backend cannot answer — quota, outage, network — the guest must
+     still be able to book. Show the phone and WhatsApp, not just "error". */
+  var OFFLINE_MSG = {
+    ka: "ონლაინ ჯავშნა დროებით მიუწვდომელია. დაგვირეკეთ ან მოგვწერეთ WhatsApp-ზე — ნომერს ჩვენ დაგიჯავშნით.",
+    en: "Online booking is temporarily unavailable. Call us or message us on WhatsApp and we will book the room for you.",
+    ru: "Онлайн-бронирование временно недоступно. Позвоните или напишите нам в WhatsApp — мы забронируем номер.",
+    tr: "Çevrimiçi rezervasyon geçici olarak kullanılamıyor. Bizi arayın ya da WhatsApp'tan yazın — odanızı biz ayıralım."
+  };
+  function offlineFallback(status) {
+    var lang = (document.documentElement.lang || "ka").slice(0, 2);
+    var msg = OFFLINE_MSG[lang] || OFFLINE_MSG.ka;
+    status.innerHTML = msg +
+      ' <a href="tel:+995597121212">+995 597 12 12 12</a> · ' +
+      '<a href="https://wa.me/995597121212" target="_blank" rel="noopener">WhatsApp</a>';
+    status.className = "form-status is-error";
+    if (window.agavaTrack) window.agavaTrack("booking_offline_fallback", {});
+  }
+
   var CFG = window.AGAVA_CONFIG || {};
   var sb = null;
   if (CFG.CONFIGURED && window.supabase) {
@@ -221,11 +240,7 @@
     status.textContent = "მოწმდება ხელმისაწვდომობა…";
     status.className = "form-status";
     sb.rpc("check_availability", { p_in: ci, p_out: co }).then(function (res) {
-      if (res.error) {
-        status.textContent = "შეცდომა — სცადეთ თავიდან ან მოგვწერეთ WhatsApp-ზე.";
-        status.className = "form-status is-error";
-        return;
-      }
+      if (res.error) { offlineFallback(status); return; }
       status.textContent = "";
       state.avail = {};
       (res.data || []).forEach(function (row) { state.avail[row.slug] = row; });
@@ -372,11 +387,12 @@
     }).then(function (res) {
       btn.disabled = false;
       if (res.error) {
-        var msg = /no availability/.test(res.error.message)
-          ? "სამწუხაროდ, ეს ოთახი ახლახან დაიკავეს — სცადეთ სხვა თარიღები."
-          : "შეცდომა — სცადეთ თავიდან ან მოგვწერეთ WhatsApp-ზე.";
-        status.textContent = msg;
-        status.className = "form-status is-error";
+        if (/no availability/.test(res.error.message)) {
+          status.textContent = "სამწუხაროდ, ეს ოთახი ახლახან დაიკავეს — სცადეთ სხვა თარიღები.";
+          status.className = "form-status is-error";
+        } else {
+          offlineFallback(status);
+        }
         return;
       }
       var b = res.data;
